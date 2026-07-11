@@ -3,8 +3,89 @@
   "name": "gemtext",
   "rules": {
     "source_file": {
-      "type": "STRING",
-      "value": "hello"
+      "type": "REPEAT",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "blockquote"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "blockquote_text"
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "heading"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "heading_text"
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "link"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "link_url"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "link_label"
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "list"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "list_text"
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "preformatted_begin"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "preformatted_text"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "preformatted_end"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "text"
+          }
+        ]
+      }
     }
   },
   "extras": [
@@ -15,7 +96,60 @@
   ],
   "conflicts": [],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "blockquote"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "blockquote_text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "heading"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "heading_text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "link"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "link_url"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "link_label"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "list"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "list_text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "preformatted_begin"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "preformatted_text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "preformatted_end"
+    }
+  ],
   "inline": [],
   "supertypes": [],
   "reserved": {}

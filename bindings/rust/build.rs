@@ -18,6 +18,83 @@ fn main() {
                 panic!("Tree-sitter build failed: {error_message}");
             }
         }
+
+        use codegen::Scope;
+        use convert_case::{Case, Casing};
+        use serde::{
+            Deserialize, Serialize,
+            de::{DeserializeOwned, Error},
+        };
+        use serde_json;
+        use std::{
+            fs::{File, read_to_string},
+            io::Write,
+            path::Path,
+        };
+
+        #[derive(Serialize, Deserialize)]
+        struct NodeType {
+            #[serde(alias = "type")]
+            type_name: String,
+            named: bool,
+            root: Option<bool>,
+        }
+
+        // rust codegen
+        fn read_to_json<T>(path: &Path) -> Result<T, impl Error>
+        where
+            T: DeserializeOwned,
+        {
+            let json_str =
+                read_to_string(path).unwrap_or_else(|_| panic!("Failed to read file: {:?}", path));
+            serde_json::from_str::<T>(&json_str)
+        }
+
+        let nodetype_json_path = Path::new("src/node-types.json");
+        println!(
+            "cargo:rerun-if-changed={}",
+            nodetype_json_path.to_str().unwrap()
+        );
+
+        let nodetype_json: Result<Vec<NodeType>, _> = read_to_json(nodetype_json_path);
+
+        let mut token_scope = Scope::new();
+        token_scope.import("strum_macros", "Display");
+        token_scope.import("strum_macros", "EnumCount");
+        token_scope.import("strum_macros", "EnumIter");
+        token_scope.import("strum_macros", "EnumString");
+
+        // enum for Token Types
+        let enum_rule = token_scope
+            .new_enum("TokenType")
+            .vis("pub")
+            .derive("Clone")
+            .derive("Copy")
+            .derive("Debug")
+            .derive("Display")
+            .derive("EnumCount")
+            .derive("EnumIter")
+            .derive("EnumString")
+            .derive("Eq")
+            .derive("Hash")
+            .derive("PartialEq");
+
+        for node_type in nodetype_json.unwrap() {
+            if let Some(true) = node_type.root {
+                // skip the root "source_file"
+                continue;
+            }
+            let name = node_type.type_name;
+            enum_rule
+                .new_variant(name.to_case(Case::Pascal))
+                .annotation(format!(r#"#[strum( serialize = "{}")]"#, name));
+        }
+        // code gen for token.rs
+        let token_rs_path = Path::new("bindings").join("rust").join("token_types.rs");
+        let mut token_rs = File::create(token_rs_path).unwrap();
+        token_rs
+            .write_all(token_scope.to_string().as_bytes())
+            .unwrap();
     }
 
     let src_dir = std::path::Path::new("src");
@@ -30,12 +107,16 @@ fn main() {
 
     if std::env::var("TARGET").unwrap() == "wasm32-unknown-unknown" {
         let Ok(wasm_headers) = std::env::var("DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS") else {
-            panic!("Environment variable DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS must be set by the language crate");
+            panic!(
+                "Environment variable DEP_TREE_SITTER_LANGUAGE_WASM_HEADERS must be set by the language crate"
+            );
         };
         let Ok(wasm_src) =
             std::env::var("DEP_TREE_SITTER_LANGUAGE_WASM_SRC").map(std::path::PathBuf::from)
         else {
-            panic!("Environment variable DEP_TREE_SITTER_LANGUAGE_WASM_SRC must be set by the language crate");
+            panic!(
+                "Environment variable DEP_TREE_SITTER_LANGUAGE_WASM_SRC must be set by the language crate"
+            );
         };
 
         c_config.include(&wasm_headers);

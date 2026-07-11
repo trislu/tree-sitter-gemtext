@@ -18,6 +18,7 @@
 //! [`Parser`]: https://docs.rs/tree-sitter/0.26.3/tree_sitter/struct.Parser.html
 //! [tree-sitter]: https://tree-sitter.github.io/
 
+use tree_sitter::Node;
 use tree_sitter_language::LanguageFn;
 
 unsafe extern "C" {
@@ -47,6 +48,62 @@ pub const LOCALS_QUERY: &str = include_str!("../../queries/locals.scm");
 #[cfg(with_tags_query)]
 /// The symbol tagging query for this grammar.
 pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
+
+use std::{ops::Range, str::FromStr};
+
+mod token_types;
+
+pub use token_types::TokenType;
+
+#[derive(Debug, Clone)]
+pub struct Spanned<T>(pub T, pub Range<usize>);
+
+pub type Token = Spanned<TokenType>;
+
+impl Token {
+    pub fn new(kind: TokenType, span: Range<usize>) -> Self {
+        Spanned(kind, span)
+    }
+
+    pub fn kind(&self) -> &TokenType {
+        &self.0
+    }
+
+    pub fn span(&self) -> &Range<usize> {
+        &self.1
+    }
+}
+
+impl TryFrom<&Node<'_>> for Token {
+    type Error = ();
+    fn try_from(node: &Node<'_>) -> Result<Self, Self::Error> {
+        if let Ok(t) = TokenType::from_str(node.kind()) {
+            let r = node.range();
+            return Ok(Token::new(t, r.start_byte..r.end_byte));
+        }
+        Err(())
+    }
+}
+
+pub fn tokenize(source: &str) -> Option<Vec<Token>> {
+    let mut parser = tree_sitter::Parser::new();
+    let language = LANGUAGE;
+    parser.set_language(&language.into()).ok()?;
+    let mut token_list = Vec::new();
+    let tree = parser.parse(source, None)?;
+    let mut parse_stack = vec![tree.root_node()];
+    while let Some(node) = parse_stack.pop() {
+        if let Ok(token) = Token::try_from(&node) {
+            token_list.push(token);
+        }
+        for i in (0..node.child_count()).rev() {
+            if let Some(child) = node.child(i as u32) {
+                parse_stack.push(child);
+            }
+        }
+    }
+    Some(token_list)
+}
 
 #[cfg(test)]
 mod tests {

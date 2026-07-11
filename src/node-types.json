@@ -3,10 +3,116 @@
     "type": "source_file",
     "named": true,
     "root": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "blockquote",
+          "named": true
+        },
+        {
+          "type": "blockquote_text",
+          "named": true
+        },
+        {
+          "type": "heading",
+          "named": true
+        },
+        {
+          "type": "heading_text",
+          "named": true
+        },
+        {
+          "type": "link",
+          "named": true
+        },
+        {
+          "type": "link_label",
+          "named": true
+        },
+        {
+          "type": "link_url",
+          "named": true
+        },
+        {
+          "type": "list",
+          "named": true
+        },
+        {
+          "type": "list_text",
+          "named": true
+        },
+        {
+          "type": "preformatted_begin",
+          "named": true
+        },
+        {
+          "type": "preformatted_end",
+          "named": true
+        },
+        {
+          "type": "preformatted_text",
+          "named": true
+        },
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "hello",
-    "named": false
+    "type": "blockquote",
+    "named": true
+  },
+  {
+    "type": "blockquote_text",
+    "named": true
+  },
+  {
+    "type": "heading",
+    "named": true
+  },
+  {
+    "type": "heading_text",
+    "named": true
+  },
+  {
+    "type": "link",
+    "named": true
+  },
+  {
+    "type": "link_label",
+    "named": true
+  },
+  {
+    "type": "link_url",
+    "named": true
+  },
+  {
+    "type": "list",
+    "named": true
+  },
+  {
+    "type": "list_text",
+    "named": true
+  },
+  {
+    "type": "preformatted_begin",
+    "named": true
+  },
+  {
+    "type": "preformatted_end",
+    "named": true
+  },
+  {
+    "type": "preformatted_text",
+    "named": true
+  },
+  {
+    "type": "text",
+    "named": true
   }
 ]

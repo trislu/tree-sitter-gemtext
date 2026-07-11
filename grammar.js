@@ -10,8 +10,33 @@
 export default grammar({
   name: "gemtext",
 
+  externals: $ => [
+    $.text,
+    $.blockquote,
+    $.blockquote_text,
+    $.heading,
+    $.heading_text,
+    $.link,
+    $.link_url,
+    $.link_label,
+    $.list,
+    $.list_text,
+    $.preformatted_begin,
+    $.preformatted_text,
+    $.preformatted_end,
+  ],
+
   rules: {
-    // TODO: add the actual grammar rules
-    source_file: $ => "hello"
-  }
-});
+    source_file: $ =>
+      repeat(
+        choice(
+          seq($.blockquote, $.blockquote_text),
+          seq($.heading, $.heading_text),
+          seq($.link, $.link_url, $.link_label),
+          seq($.list, $.list_text),
+          seq($.preformatted_begin, $.preformatted_text, $.preformatted_end),
+          $.text,
+        ),
+      ),
+  },
+})

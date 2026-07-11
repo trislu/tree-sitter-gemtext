@@ -26,12 +26,18 @@ path = "bindings/rust/lib.rs"
 
 [dependencies]
 tree-sitter-language = "0.1"
+tree-sitter = "0.26"
+strum = "0.28"
+strum_macros = "0.28"
 
 [build-dependencies]
 cc = "1.2"
+codegen = "0.3"
+convert_case = "0.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
 [dev-dependencies]
-tree-sitter = "0.26"
 tree-sitter-cli = "0.26"
 
 [features]
