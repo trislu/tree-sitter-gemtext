@@ -1,4 +1,25 @@
 fn main() {
+    #[cfg(feature = "dev")]
+    {
+        let tree_sitter_available = std::process::Command::new("tree-sitter")
+            .arg("--version")
+            .status()
+            .is_ok();
+
+        if tree_sitter_available {
+            let output = std::process::Command::new("tree-sitter")
+                .arg("generate")
+                .arg("--abi=15")
+                .output()
+                .expect("Failed to execute tree-sitter build command");
+
+            if !output.status.success() {
+                let error_message = String::from_utf8_lossy(&output.stderr);
+                panic!("Tree-sitter build failed: {error_message}");
+            }
+        }
+    }
+
     let src_dir = std::path::Path::new("src");
 
     let mut c_config = cc::Build::new();
@@ -38,11 +59,15 @@ fn main() {
     c_config.compile("tree-sitter-gemtext");
 
     println!("cargo:rustc-check-cfg=cfg(with_highlights_query)");
-    if !"queries/highlights.scm".is_empty() && std::path::Path::new("queries/highlights.scm").exists() {
+    if !"queries/highlights.scm".is_empty()
+        && std::path::Path::new("queries/highlights.scm").exists()
+    {
         println!("cargo:rustc-cfg=with_highlights_query");
     }
     println!("cargo:rustc-check-cfg=cfg(with_injections_query)");
-    if !"queries/injections.scm".is_empty() && std::path::Path::new("queries/injections.scm").exists() {
+    if !"queries/injections.scm".is_empty()
+        && std::path::Path::new("queries/injections.scm").exists()
+    {
         println!("cargo:rustc-cfg=with_injections_query");
     }
     println!("cargo:rustc-check-cfg=cfg(with_locals_query)");
