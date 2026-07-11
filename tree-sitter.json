@@ -1,0 +1,42 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "gemtext",
+      "camelcase": "Gemtext",
+      "title": "Gemtext",
+      "scope": "source.gemtext",
+      "file-types": [
+        "gmi"
+      ],
+      "injection-regex": "^gemtext$",
+      "class-name": "TreeSitterGemtext"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "A parser for gemtext",
+    "authors": [
+      {
+        "name": "room2",
+        "email": "lukai@mail.ustc.edu.cn",
+        "url": "gemini://luxng.cn/"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/trislu/tree-sitter-gemtext",
+      "funding": ""
+    }
+  },
+  "bindings": {
+    "c": false,
+    "go": false,
+    "java": false,
+    "node": false,
+    "python": false,
+    "rust": true,
+    "swift": false,
+    "zig": false
+  }
+}
