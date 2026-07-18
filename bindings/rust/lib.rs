@@ -208,8 +208,8 @@ bob"#,
             "=> https://example.com Example",
             &[
                 Token::new(Link, 0..2),
-                Token::new(LinkUrl, 2..3),
-                Token::new(LinkLabel, 3..30),
+                Token::new(LinkUrl, 2..23),
+                Token::new(LinkLabel, 23..30),
             ]
         );
     }
@@ -251,8 +251,8 @@ code block
                 Token::new(Heading, 8..9),
                 Token::new(HeadingText, 9..18),
                 Token::new(Link, 18..20),
-                Token::new(LinkUrl, 20..21),
-                Token::new(LinkLabel, 21..47),
+                Token::new(LinkUrl, 20..41),
+                Token::new(LinkLabel, 41..47),
                 Token::new(List, 47..48),
                 Token::new(ListText, 48..54),
                 Token::new(PreformattedBegin, 54..57),

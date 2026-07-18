@@ -182,19 +182,25 @@ static bool emit_link(State *s) {
 }
 
 static bool emit_link_url(State *s) {
+    // Skip leading whitespace (included in the token range).
+    while (!eof(s) && lookahead(s) == ' ') {
+        consume(s);
+    }
+    // Consume URL content until space, newline, or EOF.
+    // The delimiter space (between URL and label) is included in the URL token.
     while (!eof(s)) {
         int32_t c = lookahead(s);
-        if (c == ' ') {
-            emit(s, LINK_URL);
-            consume(s); // consume " "
-            return true;
-        }
-        if (c == '\n') {
+        if (c == ' ' || c == '\n') {
+            if (c == ' ') {
+                consume(s); // include trailing space in URL token
+            }
+            markend(s);
             emit(s, LINK_URL);
             return true;
         }
         consume(s);
     }
+    markend(s);
     emit(s, LINK_URL);
     return true;
 }
