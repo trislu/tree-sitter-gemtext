@@ -71,8 +71,11 @@
                 "name": "preformatted_begin"
               },
               {
-                "type": "SYMBOL",
-                "name": "preformatted_text"
+                "type": "REPEAT1",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "preformatted_text"
+                }
               },
               {
                 "type": "SYMBOL",

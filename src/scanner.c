@@ -255,53 +255,48 @@ static bool emit_preformatted_begin(State *s) {
 }
 
 static bool emit_preformatted_text(State *s) {
-    // We have consumed the opening ```.  Now collect all preformatted content
-    // until the closing ``` or EOF. The closing marker itself is left for
-    // emit_preformatted_end().
-    while (1) {
-        if (!skip_until(s, '`')) {
-            // Unclosed preformatted block — emit what we have.
-            markend(s);
+    // Emit one line of preformatted content.
+    while (!eof(s)) {
+        if (lookahead(s) == '\n') {
+            consume(s);
             emit(s, PREFORMATTED_TEXT);
             return true;
         }
-
-        // Candidate closing marker begins here.
-        if (!eof(s) && lookahead(s) == '`') {
-            // Mark the end of the preformatted content before the potential
-            // closing marker.
-            markend(s);
-            consume(s);
-            if (!eof(s) && lookahead(s) == '`') {
-                consume(s);
-                if (!eof(s) && lookahead(s) == '`') {
-                    // Closing marker confirmed; do not consume the third
-                    // backtick.
-                    emit(s, PREFORMATTED_TEXT);
-                    return true;
-                }
-            }
-        }
-
-        // Not a closing marker; continue scanning and let the preformatted text
-        // include the characters consumed while probing.
+        consume(s);
     }
+    // EOF — emit remaining content.
+    markend(s);
+    emit(s, PREFORMATTED_TEXT);
+    return true;
 }
 
 static bool emit_preformatted_end(State *s) {
-    // Consume the closing ``` marker and emit it as its own token.
-    for (int i = 0; i < 3; i++) {
-        if (eof(s) || lookahead(s) != '`') {
-            break;
-        }
-        consume(s);
-    }
+    // The 3 backticks have already been consumed by the caller.
+    // Consume optional trailing \n.
     if (!eof(s) && lookahead(s) == '\n') {
         consume(s);
     }
     markend(s);
     emit(s, PREFORMATTED_END);
     return true;
+}
+
+// Emit one line of preformatted content, or detect a closing ``` at column 0
+// and emit the end marker instead.
+static bool emit_preformatted_line_or_end(State *s) {
+    if (column(s) == 0) {
+        size_t count = 0;
+        while (count < 3 && !eof(s) && lookahead(s) == '`') {
+            consume(s);
+            count++;
+        }
+        if (count == 3) {
+            return emit_preformatted_end(s);
+        }
+        // count < 3: consumed chars are preformatted text content, so
+        // fall through to emit_preformatted_text for the rest of the line.
+    }
+    return emit_preformatted_text(s);
 }
 
 static bool parse_line(State *s) {
@@ -353,7 +348,7 @@ static bool emit_token(State *s) {
     case PREFORMATTED_BEGIN:
         return emit_preformatted_text(s);
     case PREFORMATTED_TEXT:
-        return emit_preformatted_end(s);
+        return emit_preformatted_line_or_end(s);
     case PREFORMATTED_END:
         return parse_line(s);
     default:

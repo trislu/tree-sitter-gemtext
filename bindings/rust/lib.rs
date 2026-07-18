@@ -230,7 +230,8 @@ code block
 ```",
             &[
                 Token::new(PreformattedBegin, 0..3),
-                Token::new(PreformattedText, 3..15),
+                Token::new(PreformattedText, 3..4),
+                Token::new(PreformattedText, 4..15),
                 Token::new(PreformattedEnd, 15..18),
             ]
         );
@@ -256,7 +257,8 @@ code block
                 Token::new(List, 47..48),
                 Token::new(ListText, 48..54),
                 Token::new(PreformattedBegin, 54..57),
-                Token::new(PreformattedText, 57..63),
+                Token::new(PreformattedText, 57..58),
+                Token::new(PreformattedText, 58..63),
                 Token::new(PreformattedEnd, 63..67),
                 Token::new(Text, 67..77),
             ]

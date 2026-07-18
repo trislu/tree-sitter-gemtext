@@ -34,7 +34,7 @@ export default grammar({
           seq($.heading, $.heading_text),
           seq($.link, $.link_url, $.link_label),
           seq($.list, $.list_text),
-          seq($.preformatted_begin, $.preformatted_text, $.preformatted_end),
+          seq($.preformatted_begin, repeat1($.preformatted_text), $.preformatted_end),
           $.text,
         ),
       ),

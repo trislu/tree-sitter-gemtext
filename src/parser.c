@@ -7,9 +7,9 @@
 #endif
 
 #define LANGUAGE_VERSION 15
-#define STATE_COUNT 14
+#define STATE_COUNT 15
 #define LARGE_STATE_COUNT 2
-#define SYMBOL_COUNT 16
+#define SYMBOL_COUNT 17
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 14
 #define EXTERNAL_TOKEN_COUNT 13
@@ -35,6 +35,7 @@ enum ts_symbol_identifiers {
   sym_preformatted_end = 13,
   sym_source_file = 14,
   aux_sym_source_file_repeat1 = 15,
+  aux_sym_source_file_repeat2 = 16,
 };
 
 static const char * const ts_symbol_names[] = {
@@ -54,6 +55,7 @@ static const char * const ts_symbol_names[] = {
   [sym_preformatted_end] = "preformatted_end",
   [sym_source_file] = "source_file",
   [aux_sym_source_file_repeat1] = "source_file_repeat1",
+  [aux_sym_source_file_repeat2] = "source_file_repeat2",
 };
 
 static const TSSymbol ts_symbol_map[] = {
@@ -73,6 +75,7 @@ static const TSSymbol ts_symbol_map[] = {
   [sym_preformatted_end] = sym_preformatted_end,
   [sym_source_file] = sym_source_file,
   [aux_sym_source_file_repeat1] = aux_sym_source_file_repeat1,
+  [aux_sym_source_file_repeat2] = aux_sym_source_file_repeat2,
 };
 
 static const TSSymbolMetadata ts_symbol_metadata[] = {
@@ -140,6 +143,10 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = false,
     .named = false,
   },
+  [aux_sym_source_file_repeat2] = {
+    .visible = false,
+    .named = false,
+  },
 };
 
 static const TSSymbol ts_alias_sequences[PRODUCTION_ID_COUNT][MAX_ALIAS_SEQUENCE_LENGTH] = {
@@ -165,6 +172,7 @@ static const TSStateId ts_primary_state_ids[STATE_COUNT] = {
   [11] = 11,
   [12] = 12,
   [13] = 13,
+  [14] = 14,
 };
 
 static bool ts_lex(TSLexer *lexer, TSStateId state) {
@@ -191,13 +199,14 @@ static const TSLexerMode ts_lex_modes[STATE_COUNT] = {
   [4] = {.lex_state = 0, .external_lex_state = 2},
   [5] = {.lex_state = 0, .external_lex_state = 2},
   [6] = {.lex_state = 0, .external_lex_state = 3},
-  [7] = {.lex_state = 0, .external_lex_state = 4},
-  [8] = {.lex_state = 0, .external_lex_state = 5},
-  [9] = {.lex_state = 0, .external_lex_state = 6},
-  [10] = {.lex_state = 0, .external_lex_state = 7},
-  [11] = {.lex_state = 0},
+  [7] = {.lex_state = 0, .external_lex_state = 3},
+  [8] = {.lex_state = 0, .external_lex_state = 4},
+  [9] = {.lex_state = 0, .external_lex_state = 5},
+  [10] = {.lex_state = 0, .external_lex_state = 6},
+  [11] = {.lex_state = 0, .external_lex_state = 7},
   [12] = {.lex_state = 0, .external_lex_state = 8},
-  [13] = {.lex_state = 0, .external_lex_state = 9},
+  [13] = {.lex_state = 0},
+  [14] = {.lex_state = 0, .external_lex_state = 9},
 };
 
 static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
@@ -218,8 +227,8 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_preformatted_end] = ACTIONS(1),
   },
   [STATE(1)] = {
-    [sym_source_file] = STATE(11),
-    [aux_sym_source_file_repeat1] = STATE(2),
+    [sym_source_file] = STATE(13),
+    [aux_sym_source_file_repeat2] = STATE(2),
     [ts_builtin_sym_end] = ACTIONS(3),
     [sym_text] = ACTIONS(5),
     [sym_blockquote] = ACTIONS(7),
@@ -247,7 +256,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(19), 1,
       sym_text,
     STATE(3), 1,
-      aux_sym_source_file_repeat1,
+      aux_sym_source_file_repeat2,
   [25] = 8,
     ACTIONS(21), 1,
       ts_builtin_sym_end,
@@ -264,7 +273,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(38), 1,
       sym_preformatted_begin,
     STATE(3), 1,
-      aux_sym_source_file_repeat1,
+      aux_sym_source_file_repeat2,
   [50] = 1,
     ACTIONS(21), 7,
       sym_text,
@@ -283,30 +292,43 @@ static const uint16_t ts_small_parse_table[] = {
       sym_list,
       sym_preformatted_begin,
       ts_builtin_sym_end,
-  [70] = 1,
+  [70] = 3,
     ACTIONS(43), 1,
-      sym_blockquote_text,
-  [74] = 1,
-    ACTIONS(43), 1,
-      sym_heading_text,
-  [78] = 1,
+      sym_preformatted_text,
     ACTIONS(45), 1,
-      sym_link_url,
-  [82] = 1,
-    ACTIONS(43), 1,
-      sym_list_text,
-  [86] = 1,
+      sym_preformatted_end,
+    STATE(7), 1,
+      aux_sym_source_file_repeat1,
+  [80] = 3,
     ACTIONS(47), 1,
       sym_preformatted_text,
-  [90] = 1,
-    ACTIONS(49), 1,
-      ts_builtin_sym_end,
-  [94] = 1,
-    ACTIONS(51), 1,
-      sym_link_label,
-  [98] = 1,
-    ACTIONS(51), 1,
+    ACTIONS(50), 1,
       sym_preformatted_end,
+    STATE(7), 1,
+      aux_sym_source_file_repeat1,
+  [90] = 2,
+    ACTIONS(52), 1,
+      sym_preformatted_text,
+    STATE(6), 1,
+      aux_sym_source_file_repeat1,
+  [97] = 1,
+    ACTIONS(54), 1,
+      sym_blockquote_text,
+  [101] = 1,
+    ACTIONS(54), 1,
+      sym_heading_text,
+  [105] = 1,
+    ACTIONS(56), 1,
+      sym_link_url,
+  [109] = 1,
+    ACTIONS(54), 1,
+      sym_list_text,
+  [113] = 1,
+    ACTIONS(58), 1,
+      ts_builtin_sym_end,
+  [117] = 1,
+    ACTIONS(45), 1,
+      sym_link_label,
 };
 
 static const uint32_t ts_small_parse_table_map[] = {
@@ -315,13 +337,14 @@ static const uint32_t ts_small_parse_table_map[] = {
   [SMALL_STATE(4)] = 50,
   [SMALL_STATE(5)] = 60,
   [SMALL_STATE(6)] = 70,
-  [SMALL_STATE(7)] = 74,
-  [SMALL_STATE(8)] = 78,
-  [SMALL_STATE(9)] = 82,
-  [SMALL_STATE(10)] = 86,
-  [SMALL_STATE(11)] = 90,
-  [SMALL_STATE(12)] = 94,
-  [SMALL_STATE(13)] = 98,
+  [SMALL_STATE(7)] = 80,
+  [SMALL_STATE(8)] = 90,
+  [SMALL_STATE(9)] = 97,
+  [SMALL_STATE(10)] = 101,
+  [SMALL_STATE(11)] = 105,
+  [SMALL_STATE(12)] = 109,
+  [SMALL_STATE(13)] = 113,
+  [SMALL_STATE(14)] = 117,
 };
 
 static const TSParseActionEntry ts_parse_actions[] = {
@@ -329,26 +352,29 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [1] = {.entry = {.count = 1, .reusable = false}}, RECOVER(),
   [3] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_source_file, 0, 0, 0),
   [5] = {.entry = {.count = 1, .reusable = true}}, SHIFT(2),
-  [7] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
-  [9] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
-  [11] = {.entry = {.count = 1, .reusable = true}}, SHIFT(8),
-  [13] = {.entry = {.count = 1, .reusable = true}}, SHIFT(9),
-  [15] = {.entry = {.count = 1, .reusable = true}}, SHIFT(10),
+  [7] = {.entry = {.count = 1, .reusable = true}}, SHIFT(9),
+  [9] = {.entry = {.count = 1, .reusable = true}}, SHIFT(10),
+  [11] = {.entry = {.count = 1, .reusable = true}}, SHIFT(11),
+  [13] = {.entry = {.count = 1, .reusable = true}}, SHIFT(12),
+  [15] = {.entry = {.count = 1, .reusable = true}}, SHIFT(8),
   [17] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_source_file, 1, 0, 0),
   [19] = {.entry = {.count = 1, .reusable = true}}, SHIFT(3),
-  [21] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0),
-  [23] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(3),
-  [26] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(6),
-  [29] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(7),
-  [32] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
-  [35] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(9),
-  [38] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(10),
-  [41] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 3, 0, 0),
-  [43] = {.entry = {.count = 1, .reusable = true}}, SHIFT(4),
-  [45] = {.entry = {.count = 1, .reusable = true}}, SHIFT(12),
-  [47] = {.entry = {.count = 1, .reusable = true}}, SHIFT(13),
-  [49] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
-  [51] = {.entry = {.count = 1, .reusable = true}}, SHIFT(5),
+  [21] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0),
+  [23] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0), SHIFT_REPEAT(3),
+  [26] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0), SHIFT_REPEAT(9),
+  [29] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0), SHIFT_REPEAT(10),
+  [32] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0), SHIFT_REPEAT(11),
+  [35] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0), SHIFT_REPEAT(12),
+  [38] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 2, 0, 0), SHIFT_REPEAT(8),
+  [41] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_source_file_repeat2, 3, 0, 0),
+  [43] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
+  [45] = {.entry = {.count = 1, .reusable = true}}, SHIFT(5),
+  [47] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0), SHIFT_REPEAT(7),
+  [50] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 2, 0, 0),
+  [52] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
+  [54] = {.entry = {.count = 1, .reusable = true}}, SHIFT(4),
+  [56] = {.entry = {.count = 1, .reusable = true}}, SHIFT(14),
+  [58] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
 };
 
 enum ts_external_scanner_symbol_identifiers {
@@ -408,25 +434,26 @@ static const bool ts_external_scanner_states[10][EXTERNAL_TOKEN_COUNT] = {
     [ts_external_token_preformatted_begin] = true,
   },
   [3] = {
-    [ts_external_token_blockquote_text] = true,
+    [ts_external_token_preformatted_text] = true,
+    [ts_external_token_preformatted_end] = true,
   },
   [4] = {
-    [ts_external_token_heading_text] = true,
-  },
-  [5] = {
-    [ts_external_token_link_url] = true,
-  },
-  [6] = {
-    [ts_external_token_list_text] = true,
-  },
-  [7] = {
     [ts_external_token_preformatted_text] = true,
   },
+  [5] = {
+    [ts_external_token_blockquote_text] = true,
+  },
+  [6] = {
+    [ts_external_token_heading_text] = true,
+  },
+  [7] = {
+    [ts_external_token_link_url] = true,
+  },
   [8] = {
-    [ts_external_token_link_label] = true,
+    [ts_external_token_list_text] = true,
   },
   [9] = {
-    [ts_external_token_preformatted_end] = true,
+    [ts_external_token_link_label] = true,
   },
 };
 
