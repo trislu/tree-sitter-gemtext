@@ -1,7 +1,8 @@
 # tree-sitter-gemtext
 
 [![Rust CI](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/rust.yml/badge.svg)](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/rust.yml)
-[![Cargo Publish](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/publish.yml/badge.svg)](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/publish.yml)
+[![Cargo Publish](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/cargo-publish.yml/badge.svg)](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/cargo-publish.yml)
+[![GitHub Release](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/github-release.yml/badge.svg)](https://github.com/trislu/tree-sitter-gemtext/actions/workflows/github-release.yml)
 [![Latest Version](https://img.shields.io/crates/v/tree-sitter-gemtext.svg)](https://crates.io/crates/tree-sitter-gemtext)
 [![License](https://img.shields.io/crates/l/tree-sitter-gemtext.svg)](LICENSE)
 
